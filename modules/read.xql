@@ -17,41 +17,16 @@ declare variable $path-to-data as xs:string := $exist:root || $exist:controller 
 Retrieve @xml:id of story to read
 ===== :)
 declare variable $id as xs:string? := request:get-parameter('id', ());
-
 (: ====
-Retrieve article using $id
+Retrieve article using $id 
 === :)
 declare variable $article as element(tei:TEI)? := 
-    collection($path-to-data)/id($id)
-    [ft:query(., $term, map{'fields':('word-count','formatted-publisher', 'formatted-date')})];
+    collection($path-to-data)/id($id);
 
-if ($article) then (: test for $article, not $id, because $id could be present but incorrect :)
-    <m:result> 
-        {$article => util:expand() (: $article is a full TEI document in tei namespace :) }
-        <m:aux>
-            <m:publisher>{ft:field($article, 'formatted-publisher')}</m:publisher>
-            <m:date>{ft:field($article, 'formatted-date')}</m:date>
-            <m:word-count>{ft:field($article, 'word-count')}</m:word-count>
-            <m:ghost-references>{
-                (: alphabetized distinct values of ghost references, with counts :)
-                for $ghost-refs as xs:string* in ($article/descendant::tei:rs/@ref)[contains(., 'ghost')]
-                group by $ref := $ghost-refs
-                order by $ref
-                return <m:ghost-reference>{concat($ref, ' (', count($ghost-refs), ')')}</m:ghost-reference>
-            }</m:ghost-references>
-            <m:places>{
-                (: TODO: Create field to avoid having to navigate the leading hash :)
-                for $place in $gazetteer//tei:place
-                    [@xml:id = $article//tei:placeName[starts-with(@ref, '#')]/@ref ! substring(., 2)]
-                return hoax:get-place-info($place)
-            }</m:places>
-            <m:people>{
-                for $person in $pros//tei:person[@xml:id = 
-                        $article//tei:persName/@ref[starts-with(., '#')] 
-                        ! substring(., 2)]
-                return hoax:get-person-info($person)}        
-            </m:people>
-        </m:aux>
+if ($article)
+then
+    <m:result>
+        $article
     </m:result>
 else 
     <m:no-result>None</m:no-result>
