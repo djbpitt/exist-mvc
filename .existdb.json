@@ -1,0 +1,25 @@
+{
+  "servers": {
+    "localhost": {
+      "server": "http://localhost:8080/exist",
+      "user": "admin",
+      "password": "",
+      "root": "/db/apps/exist-mvc"
+    }
+  },
+  "sync": {
+    "server": "localhost",
+    "active": true,
+    "ignore": [
+      ".existdb.json",
+      ".git/**",
+      ".github/**",
+      "node_modules/**",
+      "build/**",
+      ".vscode/**",
+      "README.md",
+      "yo-rc.json",
+      "*.code-workspace"
+    ]
+  }
+}
