@@ -13,18 +13,12 @@ declare variable $exist:root as xs:string := request:get-parameter("exist:root",
 declare variable $exist:controller as xs:string := request:get-parameter("exist:controller", "/exist-mvc");
 declare variable $path-to-data as xs:string := $exist:root || $exist:controller || '/data';
 
-(: =====
-Retrieve @xml:id of story to read
-===== :)
-declare variable $id as xs:string? := request:get-parameter('id', ());
-(: ====
-Retrieve article using $id 
-=== :)
-declare variable $article as element(tei:TEI)? := 
-    collection($path-to-data)/id($id);
+<m:index>
+    <m:stories>{
+        for $story in collection($path-to-data)/tei:TEI
+        let $title as xs:string := $story/descendant::tei:titleStmt/tei:title ! string()
+        order by $title
+        return <m:story xml:id="{$story/@xml:id}">{$title}</m:story>
+    }</m:stories>
+</m:index>
 
-if ($article)
-then
-    <m:result>{$article}</m:result>
-else 
-    <m:no-result>No matching articles found</m:no-result>
