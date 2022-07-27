@@ -14,7 +14,7 @@
                 <title>
                     <xsl:copy-of select="descendant::h1/node()"/>
                 </title>
-                <link rel="stylesheet" type="text/css" href="{$xslt.fqcontroller || '/resources/css/hoax.css'}"/>
+                <link rel="stylesheet" type="text/css" href="{$xslt.fqcontroller || 'resources/css/hoax.css'}"/>
             </head>
             <body>
                 <xsl:copy-of select="*"/>
